@@ -25,77 +25,43 @@
 
 edge(1..12).
 corner(13..20).
+piece(X) :- edge(X).
+piece(X) :- corner(X).
 face(u; r).
 
-
+face_loop(u, 0, 0, 1; u, 0, 1, 2; u, 0, 2, 3; u, 0, 3, 4).
+face_loop(u, 1, 0, 13; u, 1, 1, 14; u, 1, 2, 15; u, 1, 3, 16).
+face_loop(r, 0, 0, 2; r, 0, 1, 6; r, 0, 2, 10; r, 0, 3, 7).
+face_loop(r, 1, 0, 14; r, 1, 1, 15; r, 1, 2, 18; r, 1, 3, 19).
+face_loop_length(u, 0, 4; u, 1, 4; r, 0, 4; r, 1, 4).
 % effect of actions
 
 %   mid-progress
-%   u move
-holds_mid(edge_loc(E, 1), T, U+1) :- occurs(turn(u, N), T),
-                                     holds_mid(edge_loc(E, 4), T, U),
-                                     U = 0..N-1.
-holds_mid(edge_loc(E, 2), T, U+1) :- occurs(turn(u, N), T),
-                                     holds_mid(edge_loc(E, 1), T, U),
-                                     U = 0..N-1.
-holds_mid(edge_loc(E, 3), T, U+1) :- occurs(turn(u, N), T),
-                                     holds_mid(edge_loc(E, 2), T, U),
-                                     U = 0..N-1.
-holds_mid(edge_loc(E, 4), T, U+1) :- occurs(turn(u, N), T),
-                                     holds_mid(edge_loc(E, 3), T, U),
-                                     U = 0..N-1.
-holds_mid(corner_loc(C, 13), T, U+1) :- occurs(turn(u, N), T),
-                                        holds_mid(corner_loc(C, 16), T, U),
-                                        U = 0..N-1.
-holds_mid(corner_loc(C, 14), T, U+1) :- occurs(turn(u, N), T),
-                                        holds_mid(corner_loc(C, 13), T, U),
-                                        U = 0..N-1.
-holds_mid(corner_loc(C, 15), T, U+1) :- occurs(turn(u, N), T),
-                                        holds_mid(corner_loc(C, 14), T, U),
-                                        U = 0..N-1.
-holds_mid(corner_loc(C, 16), T, U+1) :- occurs(turn(u, N), T),
-                                        holds_mid(corner_loc(C, 15), T, U),
-                                        U = 0..N-1.
 
-% r move
-holds_mid(edge_loc(E, 2), T, U+1) :- occurs(turn(r, N), T),
-                                     holds_mid(edge_loc(E, 6), T, U),
-                                     U = 0..N-1.
-holds_mid(edge_loc(E, 6), T, U+1) :- occurs(turn(r, N), T),
-                                     holds_mid(edge_loc(E, 10), T, U),
-                                     U = 0..N-1.
-holds_mid(edge_loc(E, 10), T, U+1) :- occurs(turn(r, N), T),
-                                     holds_mid(edge_loc(E, 7), T, U),
-                                     U = 0..N-1.
-holds_mid(edge_loc(E, 7), T, U+1) :- occurs(turn(r, N), T),
-                                     holds_mid(edge_loc(E, 2), T, U),
-                                     U = 0..N-1.
-holds_mid(corner_loc(C, 14), T, U+1) :- occurs(turn(r, N), T),
-                                        holds_mid(corner_loc(C, 15), T, U),
-                                        U = 0..N-1.
-holds_mid(corner_loc(C, 15), T, U+1) :- occurs(turn(r, N), T),
-                                        holds_mid(corner_loc(C, 18), T, U),
-                                        U = 0..N-1.
-holds_mid(corner_loc(C, 18), T, U+1) :- occurs(turn(r, N), T),
-                                        holds_mid(corner_loc(C, 19), T, U),
-                                        U = 0..N-1.
-holds_mid(corner_loc(C, 19), T, U+1) :- occurs(turn(r, N), T),
-                                        holds_mid(corner_loc(C, 14), T, U),
-                                        U = 0..N-1.
+
+holds_mid(loc(E, X1), T, U+1) :- occurs(turn(F, N), T),
+                                holds_mid(loc(E, X2), T, U),
+                                U = 0..N-1,
+                                face(F),
+                                face_loop(F, Z, Y1, X1),
+                                face_loop(F, Z, Y2, X2),
+                                face_loop_length(F, Z, L),
+                                (Y1 + 1) \ L = Y2.
+
 holds_mid(corner_perm(C, (P+1)\3), T, U+1) :- occurs(turn(r, N), T),
-                                       holds_mid(corner_loc(C, 15), T, U),
+                                       holds_mid(loc(C, 15), T, U),
                                        holds_mid(corner_perm(C, P), T, U),
                                        U = 0..N-1.
 holds_mid(corner_perm(C, (P+2)\3), T, U+1) :- occurs(turn(r, N), T),
-                                       holds_mid(corner_loc(C, 18), T, U),
+                                       holds_mid(loc(C, 18), T, U),
                                        holds_mid(corner_perm(C, P), T, U),
                                        U = 0..N-1.
 holds_mid(corner_perm(C, (P+1)\3), T, U+1) :- occurs(turn(r, N), T),
-                                       holds_mid(corner_loc(C, 19), T, U),
+                                       holds_mid(loc(C, 19), T, U),
                                        holds_mid(corner_perm(C, P), T, U),
                                        U = 0..N-1.
 holds_mid(corner_perm(C, (P+2)\3), T, U+1) :- occurs(turn(r, N), T),
-                                       holds_mid(corner_loc(C, 14), T, U),
+                                       holds_mid(loc(C, 14), T, U),
                                        holds_mid(corner_perm(C, P), T, U),
                                        U = 0..N-1.
 
@@ -114,11 +80,9 @@ holds_mid(X, T, U+1) :- holds_mid(X, T, U), not not holds_mid(X, T, U+1), occurs
 
 
 % existance and uniqueness of value
-:- #count{E : holds(edge_loc(E,E1), T)} != 1, edge(E1), T=0..h.
-:- #count{E : holds(edge_loc(E1,E), T)} != 1, edge(E1), T=0..h.
+:- #count{E : holds(loc(E,E1), T)} != 1, piece(E1), T=0..h.
+:- #count{E : holds(loc(E1,E), T)} != 1, piece(E1), T=0..h.
 :- #count{N : holds(edge_perm(E,N), T)} != 1, edge(E), T=0..h.
-:- #count{C : holds(corner_loc(C,C1), T)} != 1, corner(C1), T=0..h.
-:- #count{C : holds(corner_loc(C1,C), T)} != 1, corner(C1), T=0..h.
 :- #count{N : holds(corner_perm(C,N), T)} != 1, corner(C), T=0..h.
 
 
