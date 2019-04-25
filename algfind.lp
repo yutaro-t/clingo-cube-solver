@@ -23,10 +23,12 @@
 %             |************|
 
 
-edge(1..12).
-corner(13..20).
-piece(X) :- edge(X).
-piece(X) :- corner(X).
+piece_type(edge; corner).
+piece(edge, 1..12; corner, 13..20).
+% edge(1..12).
+% corner(13..20).
+% piece(X) :- edge(X).
+% piece(X) :- corner(X).
 face(u; r).
 
 face_loop(u, 0, 0, 1; u, 0, 1, 2; u, 0, 2, 3; u, 0, 3, 4).
@@ -80,10 +82,10 @@ holds_mid(X, T, U+1) :- holds_mid(X, T, U), not not holds_mid(X, T, U+1), occurs
 
 
 % existance and uniqueness of value
-:- #count{E : holds(loc(E,E1), T)} != 1, piece(E1), T=0..h.
-:- #count{E : holds(loc(E1,E), T)} != 1, piece(E1), T=0..h.
-:- #count{N : holds(edge_perm(E,N), T)} != 1, edge(E), T=0..h.
-:- #count{N : holds(corner_perm(C,N), T)} != 1, corner(C), T=0..h.
+:- #count{E : holds(loc(E,E1), T)} != 1, piece(_, E1), T=0..h.
+:- #count{E : holds(loc(E1,E), T)} != 1, piece(_, E1), T=0..h.
+:- #count{N : holds(edge_perm(E,N), T)} != 1, piece(edge, E), T=0..h.
+:- #count{N : holds(corner_perm(C,N), T)} != 1, piece(corner, C), T=0..h.
 
 
 % inits
