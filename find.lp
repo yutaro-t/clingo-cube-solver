@@ -2,7 +2,7 @@
 
 % define possible actions
 
-action(turn(M, N)) :- face(M), N=1..3.
+action(turn(M, N)) :- face(M), N=1..max_turn_size.
 action(wait).
 {occurs(A, T) : action(A)} = 1 :- T = 0..h-1.
 
