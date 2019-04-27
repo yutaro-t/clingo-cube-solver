@@ -1,4 +1,6 @@
 
+#include "default_goal.lp".
+#include "default_init.lp".
 % effect of actions
 
 holds(loc(L, X1), T+1) :- occurs(turn(FACE, N), T),

@@ -26,8 +26,7 @@
 piece_type(edge; corner).
 piece(edge, 1..12; corner, 13..20).
 % Turnable face
-% face(u; d; r; l; f; b).
-face(u; r; f).
+face(u; d; r; l; f; b).
 
 pararel_face(u, 0; d, 0; r, 1; l, 1; f, 2; b, 2).
 
